@@ -1,0 +1,96 @@
+name: file_share_app
+description: "A new Flutter project."
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # State Management
+  get: ^4.7.2
+
+  # Network
+  dio: ^5.8.0+1
+
+  # UI
+  otp_pin_field: ^1.4.0
+  flutter_svg: ^2.0.17
+
+  # DI
+  get_it: ^8.0.3
+  injectable: ^2.5.0
+  injector: ^4.0.0
+
+  # Helpers
+  equatable: ^2.0.7
+  shimmer: ^3.0.0
+  flutter_dotenv: ^5.2.1
+  path_provider: ^2.1.5
+
+  # Data
+  cached_network_image: ^3.4.1
+  shared_preferences: ^2.5.2
+  file_picker: ^9.0.0
+  image_picker: ^1.1.2
+  intl: ^0.20.2
+  firebase_core: ^3.13.0
+  google_sign_in: ^6.3.0
+  webview_flutter: ^4.13.0
+  pretty_dio_logger: ^1.4.0
+  flutter_widget_from_html: ^0.16.0
+  external_path: ^2.2.0
+  permission_handler: ^12.0.0+1
+  open_file: ^3.5.10
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.14
+  injectable_generator: ^2.7.0
+  flutter_gen_runner: ^5.9.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_gen:
+  output: lib/gen/ # Optional (default: lib/gen/)
+  line_length: 160 # Optional (default: 80)
+
+  # Optional
+  integrations:
+    image: true
+    flutter_svg: true
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env
+    - assets/img/
+    - assets/svg/
+    - assets/fonts/
+  fonts:
+    - family: SF UI Display
+      fonts:
+        - asset: assets/fonts/sf-ui-display-ultralight.otf
+          weight: 100
+        - asset: assets/fonts/sf-ui-display-thin.otf
+          weight: 200
+        - asset: assets/fonts/sf-ui-display-light.otf
+          weight: 300
+        - asset: assets/fonts/sf-ui-display-black.otf
+          weight: 400
+        - asset: assets/fonts/sf-ui-display-medium.otf
+          weight: 500
+        - asset: assets/fonts/sf-ui-display-semibold.otf
+          weight: 600
+        - asset: assets/fonts/sf-ui-display-bold.otf
+          weight: 700
+        - asset: assets/fonts/sf-ui-display-heavy.otf
+          weight: 800
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
