@@ -4,8 +4,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart' hide FormData, MultipartFile;
 import 'package:dio/dio.dart' as dio show FormData, MultipartFile;
-import 'package:file_share_app/src/configs/config.dart';
-import 'package:file_share_app/src/core/network/upload_service.dart';
 import 'package:file_share_app/src/shared/shared.dart';
 import 'package:file_share_app/src/theme/theme.dart';
 import 'package:flutter/material.dart';

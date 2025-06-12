@@ -80,6 +80,9 @@ class PostSearchPage extends BaseView<PostSearchViewModel> {
                           ),
                         );
                       }
+                      if (index >= viewModel.searchResults.length) {
+                        return const SizedBox.shrink();
+                      }
                       final post = viewModel.searchResults[index];
                       return PostCard(
                         post: post,

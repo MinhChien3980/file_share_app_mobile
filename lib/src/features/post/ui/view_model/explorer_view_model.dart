@@ -11,16 +11,23 @@ class ExplorerViewModel extends ViewModel {
   bool get isLoadingMore => _isLoadingMore.value;
 
   @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
   void onReady() {
     super.onReady();
-    // Delay the fetch to ensure all dependencies are ready
+    clearCacheAndRefresh();
+  }
+
+  void clearCacheAndRefresh() {
+    CacheInterceptor.clearCacheForUrl('/posts');
+
+    page = 0;
+    _posts.clear();
+    _isLoading.value = false;
+    _isLoadingMore.value = false;
+
+    update();
+
     Future.delayed(const Duration(milliseconds: 100), () {
-      fetchPosts();
+      fetchPosts(refresh: true);
     });
   }
 
@@ -45,8 +52,14 @@ class ExplorerViewModel extends ViewModel {
       onSuccess: (data) {
         data.when(
           success: (data) {
-            _posts.addAll(data);
-            page++;
+            if (data.isNotEmpty) {
+              if (refresh) {
+                _posts.assignAll(data);
+              } else {
+                _posts.addAll(data);
+              }
+              page++;
+            }
             // Force UI update
             update();
           },
@@ -55,15 +68,18 @@ class ExplorerViewModel extends ViewModel {
             Get.snackbar('Error', error.message);
           },
         );
+        _isLoading.value = false;
+        _isLoadingMore.value = false;
+        update();
       },
       onError: (error) {
         Get.closeAllSnackbars();
         Get.snackbar(error.title ?? 'Error', error.message);
+        _isLoading.value = false;
+        _isLoadingMore.value = false;
+        update();
       },
     );
-
-    _isLoading.value = false;
-    _isLoadingMore.value = false;
   }
 
   Future<void> refreshPosts() async {
@@ -76,8 +92,9 @@ class ExplorerViewModel extends ViewModel {
           page: 0, size: 10, sort: 'createdAt,desc');
       result.when(
         success: (data) {
-          _posts.value = data;
+          _posts.assignAll(data);
           page = 1;
+          update();
           Get.closeAllSnackbars();
           Get.snackbar('Refreshed', 'Latest posts loaded successfully',
               duration: const Duration(seconds: 1));
@@ -92,6 +109,7 @@ class ExplorerViewModel extends ViewModel {
       Get.snackbar('Error', 'Failed to refresh posts');
     } finally {
       _isLoading.value = false;
+      update();
     }
   }
 }

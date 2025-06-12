@@ -36,41 +36,41 @@ class ExplorerPage extends BaseView<ExplorerViewModel> {
                 child: _SearchBar(viewModel: viewModel),
               ),
             ),
-            GetBuilder<ExplorerViewModel>(
-              builder: (controller) => SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final post = controller.posts[index];
-                    return PostCard(
-                      post: post,
-                      onLike: (isLike) {},
-                      onTap: () {
-                        Get.toNamed(RouterName.postDetail,
-                            arguments: PostDetailArgs(post));
-                      },
-                    );
-                  },
-                  childCount: controller.posts.length,
-                ),
-              ),
-            ),
+            Obx(() => SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      if (index >= viewModel.posts.length) {
+                        return const SizedBox.shrink();
+                      }
+                      final post = viewModel.posts[index];
+                      return PostCard(
+                        key: ValueKey('post_${post.id}'),
+                        post: post,
+                        onLike: (isLike) {},
+                        onTap: () {
+                          Get.toNamed(RouterName.postDetail,
+                              arguments: PostDetailArgs(post));
+                        },
+                      );
+                    },
+                    childCount: viewModel.posts.length,
+                  ),
+                )),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(10),
-                child: GetBuilder<ExplorerViewModel>(
-                  builder: (controller) => controller.posts.isEmpty
-                      ? const Center(child: Text('No posts found'))
-                      : TextButton(
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.all(16),
-                            tapTargetSize: MaterialTapTargetSize.padded,
-                          ),
-                          onPressed: () {
-                            controller.fetchPosts();
-                          },
-                          child: const Text('Load More'),
+                child: Obx(() => viewModel.posts.isEmpty
+                    ? const Center(child: Text('No posts found'))
+                    : TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.all(16),
+                          tapTargetSize: MaterialTapTargetSize.padded,
                         ),
-                ),
+                        onPressed: () {
+                          viewModel.fetchPosts();
+                        },
+                        child: const Text('Load More'),
+                      )),
               ),
             ),
           ],

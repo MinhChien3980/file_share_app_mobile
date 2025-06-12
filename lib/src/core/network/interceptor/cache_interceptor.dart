@@ -12,6 +12,17 @@ class CacheInterceptor extends Interceptor {
     required this.cacheKeyHeader,
   });
 
+  /// Clear all cached data
+  static void clearCache() {
+    _cacheKeyData.clear();
+  }
+
+  /// Clear cache for specific URL
+  static void clearCacheForUrl(String url, {String method = 'GET'}) {
+    final cacheKey = _CacheKey(method: method, url: url);
+    _cacheKeyData.remove(cacheKey);
+  }
+
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     // Check if the request is cached
@@ -20,7 +31,8 @@ class CacheInterceptor extends Interceptor {
       url: options.path,
     );
 
-    if (options.headers[cacheKeyHeader] == true && _cacheKeyData.containsKey(cacheKey)) {
+    if (options.headers[cacheKeyHeader] == true &&
+        _cacheKeyData.containsKey(cacheKey)) {
       // Return the cached response
       final cachedResponse = _cacheKeyData[cacheKey];
       handler.resolve(cachedResponse!);

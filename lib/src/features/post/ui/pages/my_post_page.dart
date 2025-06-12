@@ -40,6 +40,9 @@ class MyPostPage extends BaseView<MyPostViewModel> {
             child: ListView.builder(
               itemCount: viewModel.posts.length,
               itemBuilder: (context, index) {
+                if (index >= viewModel.posts.length) {
+                  return const SizedBox.shrink();
+                }
                 final post = viewModel.posts[index];
                 return PostCard(
                   post: post,

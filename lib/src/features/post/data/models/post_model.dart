@@ -71,10 +71,15 @@ class PostModel {
       commentCount: json['commentCount'] as int?,
       shareCount: json['shareCount'] as int?,
       reactionCount: json['reactionCount'] as int?,
-      user: json['user'] != null ? PostOwner.fromJson(json['user'] as Map<String, dynamic>) : null,
-      tags: (json['tags'] as List<dynamic>?)?.map((e) => PostTag.fromJson(e as Map<String, dynamic>)).toList(),
+      user: json['user'] != null
+          ? PostOwner.fromJson(json['user'] as Map<String, dynamic>)
+          : null,
+      tags: (json['tags'] as List<dynamic>?)
+          ?.map((e) => PostTag.fromJson(e as Map<String, dynamic>))
+          .toList(),
       isLiked: json['isLiked'] as bool?,
-      files: (json['files'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      files:
+          (json['files'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
   }
   Map<String, dynamic> toJson() {
@@ -131,13 +136,16 @@ class PostOwner {
 class PostTag {
   int? id;
   String? name;
+  List<int>? postIds;
 
-  PostTag({this.id, this.name});
+  PostTag({this.id, this.name, this.postIds});
 
   factory PostTag.fromJson(Map<String, dynamic> json) {
     return PostTag(
       id: json['id'] as int?,
       name: json['name'] as String?,
+      postIds:
+          (json['postIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
     );
   }
 
@@ -145,6 +153,7 @@ class PostTag {
     return {
       'id': id,
       'name': name,
+      'postIds': postIds,
     };
   }
 }

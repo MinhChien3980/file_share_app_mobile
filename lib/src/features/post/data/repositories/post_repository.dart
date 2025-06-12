@@ -16,6 +16,7 @@ class PostRepository {
         'page': page,
         'size': size,
         'eagerload': true,
+        '_t': DateTime.now().millisecondsSinceEpoch.toString(),
       };
 
       // Add sort parameter if provided
@@ -150,7 +151,7 @@ class PostRepository {
     required String content,
     required List<File> files,
     required String privacy,
-    List<PostTag>? tags,
+    List<int>? tagIds,
   }) async {
     try {
       // Create form data map
@@ -170,14 +171,12 @@ class PostRepository {
         ]);
       }
 
-      // Add tags if provided (optional)
-      if (tags != null && tags.isNotEmpty) {
-        formDataMap['tags'] = tags.map((tag) => tag.id).toList();
+      if (tagIds != null && tagIds.isNotEmpty) {
+        formDataMap['tagIds'] = tagIds.map((id) => id.toString()).toList();
       }
 
       final formData = FormData.fromMap(formDataMap);
 
-      // Log form data for debugging
       for (var field in formData.fields) {
         log('FormData field: ${field.key} = ${field.value}');
       }
@@ -208,13 +207,13 @@ class PostRepository {
   Future<Result<PostModel>> createTextPost({
     required String content,
     required String privacy,
-    List<PostTag>? tags,
+    List<int>? tagIds,
   }) async {
     return createPost(
       content: content,
-      files: [], // Empty file list
+      files: [],
       privacy: privacy,
-      tags: tags,
+      tagIds: tagIds,
     );
   }
 

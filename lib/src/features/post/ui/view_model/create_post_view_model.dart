@@ -97,13 +97,15 @@ class CreatePostViewModel extends ViewModel {
     final files = _selectFile.value;
     final privacy = _privacy.value;
 
+    final tagIds = tags.map((tag) => tag.id!).toList();
+
     runAction<Result<PostModel>>(
       () async {
         return await _postRepository.createPost(
           content: content,
           files: files,
           privacy: privacy,
-          tags: tags.isNotEmpty ? tags : null,
+          tagIds: tagIds.isNotEmpty ? tagIds : null,
         );
       },
       showLoading: true,

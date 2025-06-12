@@ -15,15 +15,20 @@ class PostDetailPage extends BaseView<PostDetailViewModel> {
               slivers: [
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 10),
                     child: ListTile(
                       leading: CircleAvatar(
                         radius: 30,
-                        backgroundImage: viewModel.postDetail.user?.imageUrl != null
+                        backgroundImage: viewModel.postDetail.user?.imageUrl !=
+                                null
                             ? NetworkImage(viewModel.postDetail.user!.imageUrl!)
-                            : const AssetImage('assets/img/default_avatar.png') as ImageProvider<Object>,
+                            : const AssetImage('assets/img/default_avatar.png')
+                                as ImageProvider<Object>,
                       ),
-                      title: Text(viewModel.postDetail.user?.username ?? '', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      title: Text(viewModel.postDetail.user?.username ?? '',
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ),
@@ -33,30 +38,63 @@ class PostDetailPage extends BaseView<PostDetailViewModel> {
                       padding: const EdgeInsets.all(10),
                       child: HtmlWidget(
                         viewModel.postDetail.content!,
-                        textStyle: const TextStyle(fontSize: 16, color: Colors.black),
+                        textStyle:
+                            const TextStyle(fontSize: 16, color: Colors.black),
                       ),
                     ),
                   ),
-                if (viewModel.postDetail.tags != null && viewModel.postDetail.tags!.isNotEmpty)
+                if (viewModel.postDetail.tags != null &&
+                    viewModel.postDetail.tags!.isNotEmpty)
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      child: Wrap(
-                        spacing: 8,
-                        runSpacing: 4,
-                        children: viewModel.postDetail.tags!.map((tag) {
-                          return Chip(
-                            label: Text(tag.name ?? ''),
-                            backgroundColor: Colors.blue.shade100,
-                          );
-                        }).toList(),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Tags',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 4,
+                            children: viewModel.postDetail.tags!.map((tag) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.shade50,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border:
+                                      Border.all(color: Colors.blue.shade200),
+                                ),
+                                child: Text(
+                                  '#${tag.name ?? ''}',
+                                  style: TextStyle(
+                                    color: Colors.blue.shade700,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                if (viewModel.postDetail.files != null && viewModel.postDetail.files!.isNotEmpty)
+                if (viewModel.postDetail.files != null &&
+                    viewModel.postDetail.files!.isNotEmpty)
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
@@ -70,22 +108,33 @@ class PostDetailPage extends BaseView<PostDetailViewModel> {
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
+                                if (index >= viewModel.fileInPost.length) {
+                                  return const SizedBox.shrink();
+                                }
                                 final file = viewModel.fileInPost[index];
                                 return Row(
                                   children: [
-                                    const Icon(Icons.attach_file, color: Colors.blue),
+                                    const Icon(Icons.attach_file,
+                                        color: Colors.blue),
                                     const SizedBox(width: 10),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text(file.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                                          Text('${(file.size / 1024).toStringAsFixed(2)} kb', style: const TextStyle(color: Colors.grey)),
+                                          Text(file.name,
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold)),
+                                          Text(
+                                              '${(file.size / 1024).toStringAsFixed(2)} kb',
+                                              style: const TextStyle(
+                                                  color: Colors.grey)),
                                         ],
                                       ),
                                     ),
                                     IconButton(
-                                      icon: const Icon(Icons.download, color: Colors.green),
+                                      icon: const Icon(Icons.download,
+                                          color: Colors.green),
                                       onPressed: () {
                                         viewModel.downloadFile(file.url);
                                       },
@@ -160,14 +209,18 @@ class _ReactionButtonGroupState extends State<ReactionButtonGroup> {
                   children: [
                     Icon(
                       Icons.thumb_up,
-                      color: widget.post.isLiked ?? false ? Colors.blue : Colors.grey,
+                      color: widget.post.isLiked ?? false
+                          ? Colors.blue
+                          : Colors.grey,
                       size: 24,
                     ),
                     const SizedBox(width: 5),
                     Text(
                       '${widget.post.reactionCount ?? 0}',
                       style: TextStyle(
-                        color: widget.post.isLiked ?? false ? Colors.blue : Colors.grey,
+                        color: widget.post.isLiked ?? false
+                            ? Colors.blue
+                            : Colors.grey,
                         fontSize: 16,
                       ),
                     ),
@@ -177,9 +230,11 @@ class _ReactionButtonGroupState extends State<ReactionButtonGroup> {
                   setState(() {
                     widget.post.isLiked = !(widget.post.isLiked ?? false);
                     if (widget.post.isLiked!) {
-                      widget.post.reactionCount = (widget.post.reactionCount ?? 0) + 1;
+                      widget.post.reactionCount =
+                          (widget.post.reactionCount ?? 0) + 1;
                     } else {
-                      widget.post.reactionCount = (widget.post.reactionCount ?? 0) - 1;
+                      widget.post.reactionCount =
+                          (widget.post.reactionCount ?? 0) - 1;
                     }
                   });
                   widget.onLike(widget.post.isLiked!);

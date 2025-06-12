@@ -33,6 +33,15 @@ class HomeViewModel extends ViewModel {
     Get.put<ExplorerViewModel>(ExplorerViewModel(), permanent: true);
     Get.put<PostSearchViewModel>(PostSearchViewModel(), permanent: true);
     Get.put<ProfileViewModel>(ProfileViewModel(), permanent: true);
+
+    Future.delayed(const Duration(milliseconds: 50), () {
+      try {
+        final explorerVM = Get.find<ExplorerViewModel>();
+        explorerVM.fetchPosts(refresh: true);
+      } catch (e) {
+        // not ready yet
+      }
+    });
   }
 
   @override

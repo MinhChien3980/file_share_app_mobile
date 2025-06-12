@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -90,7 +89,6 @@ class FullScreenImageViewer extends StatelessWidget {
       );
 
       // TODO: Integrate with download system
-      // For now, just show success message
       await Future.delayed(const Duration(seconds: 1));
 
       Get.closeAllSnackbars();
@@ -103,7 +101,6 @@ class FullScreenImageViewer extends StatelessWidget {
         icon: const Icon(Icons.check_circle, color: Colors.green),
       );
     } catch (e) {
-      // Show error message
       Get.closeAllSnackbars();
       Get.snackbar(
         'Lỗi tải xuống',

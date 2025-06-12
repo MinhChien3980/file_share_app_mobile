@@ -120,6 +120,44 @@ class _PostCardState extends State<PostCard> {
               ),
             ),
 
+          // Tags Section
+          Builder(
+            key: ValueKey(
+                'tags_${widget.post.id}_${widget.post.tags?.length ?? 0}'),
+            builder: (context) {
+              if (widget.post.tags != null && widget.post.tags!.isNotEmpty) {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: widget.post.tags!.map((tag) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.blue.shade200),
+                        ),
+                        child: Text(
+                          '#${tag.name ?? ''}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.blue.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+
           const SizedBox(height: 12),
 
           // Images Grid
