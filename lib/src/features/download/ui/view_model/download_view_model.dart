@@ -5,6 +5,11 @@ class DownloadViewModel extends ViewModel {
   final RxList<DownloadTask> _downloadTasks = <DownloadTask>[].obs;
   List<DownloadTask> get downloadTasks => _downloadTasks;
   final _uploadService = getIt<UploadService>();
+  final _isLoadingMore = false.obs;
+  bool get isLoadingMore => _isLoadingMore.value;
+  int _currentPage = 0;
+  static const int _pageSize = 20;
+  bool _hasMoreData = true;
 
   @override
   void onInit() {
@@ -24,6 +29,44 @@ class DownloadViewModel extends ViewModel {
   void onClose() {
     _storageService.setDownloadTasks(_downloadTasks);
     super.onClose();
+  }
+
+  Future<void> refreshDownloads() async {
+    _currentPage = 0;
+    _hasMoreData = true;
+    final localTasks = _storageService.getDownloadTasks();
+    _downloadTasks.clear();
+    _downloadTasks.addAll(localTasks);
+    update();
+  }
+
+  Future<void> loadMoreDownloads() async {
+    if (_isLoadingMore.value || !_hasMoreData) return;
+
+    _isLoadingMore.value = true;
+    update();
+
+    try {
+      final localTasks = _storageService.getDownloadTasks();
+      final startIndex = _currentPage * _pageSize;
+      final endIndex = startIndex + _pageSize;
+
+      if (startIndex >= localTasks.length) {
+        _hasMoreData = false;
+      } else {
+        final newTasks = localTasks.sublist(
+          startIndex,
+          endIndex > localTasks.length ? localTasks.length : endIndex,
+        );
+        _downloadTasks.addAll(newTasks);
+        _currentPage++;
+      }
+    } catch (e) {
+      print('Error loading more downloads: $e');
+    } finally {
+      _isLoadingMore.value = false;
+      update();
+    }
   }
 
   void addDownloadTask(DownloadTask task) {

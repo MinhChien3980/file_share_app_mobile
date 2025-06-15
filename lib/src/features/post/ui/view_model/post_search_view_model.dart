@@ -11,25 +11,26 @@ class PostSearchViewModel extends ViewModel {
   int page = 0;
   final Debouncer _debouncer =
       Debouncer(delay: const Duration(milliseconds: 500));
+  bool isTagSearch = true; // Always use tag search for this page
 
   void onSearchSubmitted(String query) {
-    if (query.isEmpty || query.length <= 2) return;
+    if (query.isEmpty || query.isEmpty) return;
     currentQuery = query;
     page = 0;
     _debouncer.call(() {
-      _searchPosts(query: query);
+      _searchPostsByTags(tags: query);
     });
   }
 
-  void _searchPosts({required String query, int page = 0}) {
+  void _searchPostsByTags({required String tags, int page = 0}) {
     isLoading.value = true;
     runAction<Result<List<PostModel>>>(
       () async {
-        return await _postRepository.searchPosts(
-            query: query,
-            page: page,
-            sort: 'createdAt,desc' // Sort by creation date, newest first
-            );
+        return await _postRepository.searchPostsByTags(
+          tags: tags,
+          page: page,
+          size: 20,
+        );
       },
       onSuccess: (data) {
         data.when(success: (data) {
@@ -54,9 +55,9 @@ class PostSearchViewModel extends ViewModel {
   void loadMore() {
     if (isLoading.value) return;
     _debouncer.call(() {
-      if (currentQuery.isNotEmpty && currentQuery.length > 2) {
+      if (currentQuery.isNotEmpty) {
         page++;
-        _searchPosts(query: currentQuery, page: page);
+        _searchPostsByTags(tags: currentQuery, page: page);
       }
     });
   }
@@ -64,10 +65,10 @@ class PostSearchViewModel extends ViewModel {
   // Method for pull-to-refresh functionality
   @override
   Future<void> refresh() async {
-    if (currentQuery.isNotEmpty && currentQuery.length > 2) {
+    if (currentQuery.isNotEmpty) {
       page = 0;
       _searchResults.clear();
-      _searchPosts(query: currentQuery, page: 0);
+      _searchPostsByTags(tags: currentQuery, page: 0);
     }
   }
 }

@@ -245,4 +245,35 @@ class PostRepository {
       ));
     }
   }
+
+  Future<Result<List<PostModel>>> searchPostsByTags({
+    required String tags,
+    int page = 0,
+    int size = 20,
+  }) async {
+    try {
+      final queryParams = {
+        'tags': tags,
+        'page': page,
+        'size': size,
+      };
+      final response = await _restClient.get<Map<String, dynamic>>(
+        '/posts/posts/search/tags',
+        queryParameters: queryParams,
+      );
+      final content = response['content'] as List<dynamic>? ?? [];
+      final posts = content
+          .map((e) => PostModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+      return Success(posts);
+    } catch (e) {
+      if (e is DioException) {
+        return Failure(AppError.fromDioException(e));
+      }
+      return Failure(AppError(
+        'An error occurred while searching posts by tags',
+        stackTrace: StackTrace.current,
+      ));
+    }
+  }
 }

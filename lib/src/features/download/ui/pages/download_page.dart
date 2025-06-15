@@ -122,31 +122,54 @@ class DownloadPage extends BaseView<DownloadViewModel> {
                     .where((task) => task.status == DownloadTaskStatus.failed)
                     .toList();
 
-                return ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  children: [
-                    if (activeDownloads.isNotEmpty) ...[
-                      _buildSectionHeader('Đang tải xuống',
-                          activeDownloads.length, Icons.downloading),
-                      ...activeDownloads
-                          .map((task) => _buildDownloadCard(task, context)),
-                      const SizedBox(height: 16),
-                    ],
-                    if (completedDownloads.isNotEmpty) ...[
-                      _buildSectionHeader('Đã hoàn thành',
-                          completedDownloads.length, Icons.check_circle),
-                      ...completedDownloads
-                          .map((task) => _buildDownloadCard(task, context)),
-                      const SizedBox(height: 16),
-                    ],
-                    if (failedDownloads.isNotEmpty) ...[
-                      _buildSectionHeader(
-                          'Thất bại', failedDownloads.length, Icons.error),
-                      ...failedDownloads
-                          .map((task) => _buildDownloadCard(task, context)),
-                      const SizedBox(height: 16),
-                    ],
-                  ],
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    await controller.refreshDownloads();
+                  },
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      if (scrollInfo is ScrollEndNotification &&
+                          scrollInfo.metrics.pixels >=
+                              scrollInfo.metrics.maxScrollExtent * 0.8) {
+                        controller.loadMoreDownloads();
+                      }
+                      return true;
+                    },
+                    child: ListView(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      children: [
+                        if (activeDownloads.isNotEmpty) ...[
+                          _buildSectionHeader('Đang tải xuống',
+                              activeDownloads.length, Icons.downloading),
+                          ...activeDownloads
+                              .map((task) => _buildDownloadCard(task, context)),
+                          const SizedBox(height: 16),
+                        ],
+                        if (completedDownloads.isNotEmpty) ...[
+                          _buildSectionHeader('Đã hoàn thành',
+                              completedDownloads.length, Icons.check_circle),
+                          ...completedDownloads
+                              .map((task) => _buildDownloadCard(task, context)),
+                          const SizedBox(height: 16),
+                        ],
+                        if (failedDownloads.isNotEmpty) ...[
+                          _buildSectionHeader(
+                              'Thất bại', failedDownloads.length, Icons.error),
+                          ...failedDownloads
+                              .map((task) => _buildDownloadCard(task, context)),
+                          const SizedBox(height: 16),
+                        ],
+                        if (controller.isLoadingMore) ...[
+                          const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
                 );
               },
             ),

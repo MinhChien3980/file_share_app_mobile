@@ -85,6 +85,15 @@ class _HomeContentState extends State<_HomeContent> {
     if (widget.currentIndex != oldWidget.currentIndex) {
       print(
           '_HomeContent didUpdateWidget - old: ${oldWidget.currentIndex}, new: ${widget.currentIndex}');
+      // If Downloads tab is selected, refresh downloads
+      if (widget.currentIndex == 2) {
+        try {
+          final downloadVM = Get.find<DownloadViewModel>();
+          downloadVM.refreshDownloads();
+        } catch (e) {
+          print('Error refreshing DownloadViewModel: $e');
+        }
+      }
     }
   }
 
