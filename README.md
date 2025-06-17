@@ -7,6 +7,9 @@ This is a Flutter-based file sharing application.
 You can download the latest Android APK from Google Drive:
 
 [Download app-release.apk](https://drive.google.com/drive/folders/1TVj1zUX70cU9UaXhRe9NimqOT0S7j-KF?usp=sharing)
+## Account
+- username : minhchien
+- password : admin
 
 ## Features
 - Share and download files
